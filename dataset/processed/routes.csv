@@ -1,0 +1,11 @@
+﻿route_id,origin_id,origin_name,origin_kecamatan,origin_latitude,origin_longitude,destination_id,destination_name,destination_kecamatan,destination_latitude,destination_longitude,distance_km,duration_min,elevation_gain_m,min_elevation_m,max_elevation_m
+1,80,Kantor Imigrasi Bogor,Tanah Sareal,-6.5849431,106.7923333,99,Perumahan Villa Duta,Bogor Barat,-6.6096272,106.8133836,6.058,10.91,129.3,237.0,300.5
+2,66,Kantor DPRD Kota Bogor,Bogor Tengah,-6.572585,106.79659,69,Kantor Kecamatan Bogor Barat,Bogor Barat,-6.583485,106.774611,5.352,8.54,88.0,200.0,240.0
+3,80,Kantor Imigrasi Bogor,Tanah Sareal,-6.5849431,106.7923333,16,Masjid Raya Bogor,Bogor Tengah,-6.606988663554741,106.80860628656222,5.515,10.8,138.4,238.0,290.0
+4,91,Jalan Pajajaran,Bogor Timur,-6.5921776,106.8022352,16,Masjid Raya Bogor,Bogor Tengah,-6.606988663554741,106.80860628656222,4.215,6.97,95.9,237.0,294.0
+5,13,Museum Zoologi Bogor,Bogor Tengah,-6.603389589179282,106.7969903442081,68,Kantor Kecamatan Bogor Timur,Bogor Timur,-6.612069,106.812426,4.275,7.21,98.7,247.0,310.0
+6,8,Pasar Bogor,Bogor Tengah,-6.603580704569467,106.79992491537674,99,Perumahan Villa Duta,Bogor Barat,-6.6096272,106.8133836,4.74,5.68,128.1,273.0,310.0
+7,27,SMAN 4 Bogor,Bogor Selatan,-6.6162291,106.7983971,87,Ibis Styles Bogor Raya,Bogor Timur,-6.5857078,106.7641044,7.841,14.55,98.9,210.19,291.0
+8,33,Sekolah Bogor Raya,Bogor Utara,-6.592122,106.8168999,58,Pasar Jambu Dua,Bogor Utara,-6.5702456,106.8047327,4.351,5.08,48.6,196.0,235.0
+9,17,Gereja Katedral Bogor,Bogor Tengah,-6.596630139338006,106.79314062887386,35,RS Salak,Bogor Tengah,-6.5916407,106.7946331,1.984,5.61,26.1,250.0,267.0
+10,69,Kantor Kecamatan Bogor Barat,Bogor Barat,-6.583485,106.774611,81,Hotel Salak The Heritage,Bogor Tengah,-6.5946875,106.794326,5.615,9.01,141.9,211.51,271.0

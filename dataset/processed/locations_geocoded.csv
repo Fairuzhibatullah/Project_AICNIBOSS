@@ -1,0 +1,101 @@
+﻿id,nama_lokasi,kategori,kecamatan,latitude,longitude
+1,Stasiun Bogor,Transportasi,Bogor Tengah,-6.592712957201527,106.7911262101133
+2,Stasiun Bogor Paledang,Transportasi,Bogor Tengah,-6.597496397609913,106.79042261540569
+3,Kebun Raya Bogor,Wisata,Bogor Tengah,-6.597374932404726,106.79954489072371
+4,Istana Bogor,Wisata,Bogor Tengah,-6.597775433220888,106.79734067603493
+5,Tugu Kujang,Landmark,Bogor Tengah,-6.601281834443263,106.8050416135181
+6,Botani Square,Mall,Bogor Tengah,-6.601249861324981,106.80689770220755
+7,BTM Mall,Mall,Bogor Tengah,-6.604523042258852,106.79572222955677
+8,Pasar Bogor,Pasar,Bogor Tengah,-6.603580704569467,106.79992491537674
+9,Pasar Anyar Bogor,Pasar,Bogor Tengah,-6.588843982275399,106.7930881651697
+10,Taman Sempur,Taman,Bogor Tengah,-6.591508099635041,106.80077575585253
+11,Taman Kencana,Taman,Bogor Tengah,-6.588630453968635,106.80196665668795
+12,Alun-Alun Kota Bogor,Taman,Bogor Tengah,-6.594318353682232,106.79147964235565
+13,Museum Zoologi Bogor,Wisata,Bogor Tengah,-6.603389589179282,106.7969903442081
+14,Museum PETA,Wisata,Bogor Tengah,-6.584672171298669,106.79630447023173
+15,Lawang Suryakencana,Landmark,Bogor Tengah,-6.603091719701452,106.79896344422106
+16,Masjid Raya Bogor,Masjid,Bogor Tengah,-6.606988663554741,106.80860628656222
+17,Gereja Katedral Bogor,Tempat Ibadah,Bogor Tengah,-6.596630139338006,106.79314062887386
+18,Balaikota Bogor,Pemerintahan,Bogor Tengah,-6.594884552945039,106.79436067863656
+19,Kantor Pos Bogor,Fasilitas Umum,Bogor Tengah,-6.600060145405093,106.79511494420923
+20,Polresta Bogor Kota,Pemerintahan,Bogor Tengah,-6.5965851,106.7888392
+21,Universitas Pakuan,Universitas,Bogor Timur,-6.5994607,106.8092148
+22,Universitas Ibn Khaldun Bogor,Universitas,Bogor Selatan,-6.561141,106.7898369
+23,Institut Bisnis dan Informatika Kesatuan,Universitas,Bogor Tengah,-6.6084464,106.7926794
+24,SMAN 1 Bogor,Sekolah,Bogor Tengah,-6.5973272,106.7907632
+25,SMAN 2 Bogor,Sekolah,Bogor Utara,-6.5538838,106.7915464
+26,SMAN 3 Bogor,Sekolah,Bogor Timur,-6.607316,106.8084244
+27,SMAN 4 Bogor,Sekolah,Bogor Selatan,-6.6162291,106.7983971
+28,SMAN 5 Bogor,Sekolah,Bogor Barat,-6.5852578,106.7813162
+29,SMAN 6 Bogor,Sekolah,Tanah Sareal,-6.5720516,106.796332
+30,SMKN 1 Bogor,Sekolah,Bogor Utara,-6.5695772,106.8007969
+31,SMKN 2 Bogor,Sekolah,Bogor Barat,-6.5531723,106.8223513
+32,SMKN 3 Bogor,Sekolah,Tanah Sareal,-6.5847002,106.7949703
+33,Sekolah Bogor Raya,Sekolah,Bogor Utara,-6.592122,106.8168999
+34,RS PMI Bogor,Rumah Sakit,Bogor Tengah,-6.5982997,106.8035758
+35,RS Salak,Rumah Sakit,Bogor Tengah,-6.5916407,106.7946331
+36,RS Azra,Rumah Sakit,Bogor Utara,-6.5802867,106.8042924
+37,RS Hermina Bogor,Rumah Sakit,Bogor Utara,-6.5575076,106.7712121
+38,Siloam Hospital Bogor,Rumah Sakit,Bogor Timur,-6.5956585,106.8021132
+39,RSUD Kota Bogor,Rumah Sakit,Tanah Sareal,-6.5806912,106.7753684
+40,Mayapada Hospital Bogor,Rumah Sakit,Bogor Barat,-6.6079742,106.8109475
+41,GOR Pajajaran,Olahraga,Bogor Utara,-6.5771546,106.7949377
+42,Stadion Pajajaran,Olahraga,Bogor Utara,-6.5771546,106.794937
+43,Taman Heulang,Taman,Bogor Utara,-6.5697158,106.7997198
+44,Taman Corat-Coret,Taman,Bogor Utara,-6.5820555,106.8150733
+45,Taman Ekspresi,Taman,Bogor Timur,-6.5918356,106.7992609
+46,Prasasti Batutulis,Wisata,Bogor Selatan,-6.6236536,106.8064203
+47,The Jungle Water Adventure,Wisata,Bogor Selatan,-6.6344741,106.7923466
+48,The Jungle Fest,Wisata,Bogor Selatan,-6.642170,106.785672
+49,Devoyage Bogor,Wisata,Bogor Selatan,-6.638270,106.794960
+50,Bogor Trade Mall,Mall,Bogor Selatan,-6.6049873,106.7944817
+51,Boxies 123 Mall,Mall,Bogor Selatan,-6.6337867,106.8244727
+52,Lippo Plaza Ekalokasari,Mall,Bogor Timur,-6.6217431,106.8150758
+53,Plaza Jambu Dua,Mall,Bogor Utara,-6.5695718,106.806717
+54,Yogya Cimanggu Avenue,Mall,Bogor Utara,-6.5617732,106.7739333
+55,Transmart Yasmin,Mall,Bogor Barat,-6.556652,106.775471
+56,Lotte Grosir Bogor,Pusat Belanja,Bogor Barat,-6.5570525,106.7777377
+57,Depo Bangunan Bogor,Pusat Belanja,Bogor Barat,-6.5570279,106.7689548
+58,Pasar Jambu Dua,Pasar,Bogor Utara,-6.5702456,106.8047327
+59,Pasar Merdeka,Pasar,Bogor Barat,-6.5921374,106.784311
+60,Terminal Baranangsiang,Transportasi,Bogor Timur,-65.892,106.793
+61,Terminal Bubulak,Transportasi,Bogor Barat,-6.570077,106.754988
+62,Masjid Agung Al Mi'raj,Masjid,Bogor Selatan,-6.606977,106.808617
+63,Masjid At-Taqwa Pajajaran,Masjid,Bogor Timur,-6.594186,106.793454
+64,Masjid Jami Yasmin,Masjid,Bogor Barat,-6.560007,106.768152
+65,Bogor Creative Center,Fasilitas Umum,Tanah Sareal,-6.593242,106.795366
+66,Kantor DPRD Kota Bogor,Pemerintahan,Bogor Tengah,-6.572585,106.796590
+67,Kantor Kecamatan Bogor Tengah,Pemerintahan,Bogor Tengah,-6.586729,106.794688
+68,Kantor Kecamatan Bogor Timur,Pemerintahan,Bogor Timur,-6.612069,106.812426
+69,Kantor Kecamatan Bogor Barat,Pemerintahan,Bogor Barat,-6.583485,106.774611
+70,Kantor Kecamatan Bogor Selatan,Pemerintahan,Bogor Selatan,-6.612830,106.798014
+71,Kantor Kecamatan Bogor Utara,Pemerintahan,Bogor Utara,-6.580404,106.811361
+72,Kantor Kecamatan Tanah Sareal,Pemerintahan,Tanah Sareal,-6.568257,106.800071
+73,Perpustakaan Kota Bogor,Fasilitas Umum,Bogor Tengah,-6.596103,106.793157
+74,Dinas Pendidikan Kota Bogor,Pemerintahan,Tanah Sareal,-6.573022,106.808346
+75,Dinas Kesehatan Kota Bogor,Pemerintahan,Tanah Sareal,-6.574376,106.799163
+76,Dinas Perhubungan Kota Bogor,Pemerintahan,Tanah Sareal,-6.629779,106.823882
+77,Kejaksaan Negeri Bogor,Pemerintahan,Bogor Tengah,-6.594358,106.794640
+78,Pengadilan Negeri Bogor,Pemerintahan,Bogor Tengah,-6.591744,106.795652
+79,Samsat Kota Bogor,Pemerintahan,Tanah Sareal,-6.593555,106.794408
+80,Kantor Imigrasi Bogor,Pemerintahan,Tanah Sareal,-6.5849431,106.7923333
+81,Hotel Salak The Heritage,Hotel,Bogor Tengah,-6.5946875,106.794326
+82,Swiss-Belhotel Bogor,Hotel,Bogor Tengah,-6.5946607,106.7866012
+83,Bigland Hotel Bogor,Hotel,Bogor Utara,-6.5984059,106.8067576
+84,Royal Hotel Bogor,Hotel,Bogor Selatan,-6.6025437,106.79241
+85,Padjadjaran Suites Resort,Hotel,Bogor Selatan,-6.6402068,106.7840143
+86,Whiz Prime Hotel Bogor,Hotel,Bogor Tengah,-6.5858001,106.8027295
+87,Ibis Styles Bogor Raya,Hotel,Bogor Timur,-6.5857078,106.7641044
+88,Aston Bogor Hotel,Hotel,Bogor Selatan,-6.6363804,106.7929638
+89,Bogor Valley Hotel,Hotel,Tanah Sareal,-6.5619242,106.7977633
+90,Zest Hotel Bogor,Hotel,Bogor Tengah,-6.5933547,106.8025151
+91,Jalan Pajajaran,Landmark,Bogor Timur,-6.5921776,106.8022352
+92,Jalan Sudirman,Landmark,Bogor Tengah,-6.5867306,106.79437
+93,Jalan Juanda,Landmark,Bogor Tengah,-6.5994784,106.7920194
+94,Jalan Ahmad Yani,Landmark,Bogor Timur,-6.5741162,106.7990147
+95,Jalan Sholeh Iskandar,Landmark,Tanah Sareal,-6.5545239,106.7784464
+96,Jalan KH Abdullah Bin Nuh,Landmark,Bogor Barat,-6.5634457,106.7614795
+97,Perumahan Taman Yasmin,Perumahan,Bogor Barat,-6.5634243,106.7614795
+98,Perumahan Bogor Baru,Perumahan,Bogor Utara,-6.563332,106.7228544
+99,Perumahan Villa Duta,Perumahan,Bogor Barat,-6.6096272,106.8133836
+100,Perumahan Cimanggu Permai,Perumahan,Tanah Sareal,-6.6095349,106.7747585
