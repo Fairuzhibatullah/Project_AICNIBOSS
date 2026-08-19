@@ -3,7 +3,7 @@ from pathlib import Path
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from backend.services.geocoding import geocode_location
 from backend.services.routing import get_route
@@ -59,18 +59,18 @@ class PredictionRequest(BaseModel):
     # Kendaraan
     brand: str
     model: str
-    cc: float
-    weight_kg: float
+    cc: float = Field(gt=0, description="Kapasitas mesin dalam cc")
+    weight_kg: float = Field(gt=0, description="Berat kendaraan dalam kg")
     fuel_type: str
 
     # Kondisi pengendara
     riding_style: str
-    avg_speed_kmh: float
-    rider_weight: float
-    city_percentage: float
+    avg_speed_kmh: float = Field(gt=0, description="Kecepatan rata-rata dalam km/jam")
+    rider_weight: float = Field(gt=0, description="Berat pengendara dalam kg")
+    city_percentage: float = Field(ge=0, le=100, description="Persentase kondisi dalam kota (0-100)")
 
     # Harga BBM
-    fuel_price_per_liter: float
+    fuel_price_per_liter: float = Field(gt=0, description="Harga BBM per liter")
 
 
 # ============================================================
@@ -92,198 +92,170 @@ def root():
 @app.post("/predict")
 def predict(request: PredictionRequest):
 
+    # Validasi input lokasi
+    if not request.origin.strip() or not request.destination.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Lokasi origin dan destination tidak boleh kosong."
+        )
+
+    # ----------------------------------------------------
+    # 1. GEOCODING
+    # ----------------------------------------------------
     try:
-
-        # ----------------------------------------------------
-        # 1. GEOCODING
-        # ----------------------------------------------------
-
-        print("Mencari lokasi origin...")
-
+        print("Mencari lokasi origin:", request.origin)
         origin = geocode_location(request.origin)
-
         print("Origin:", origin)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Geocoding origin gagal: {str(e)}"
+        )
 
-        print("Mencari lokasi destination...")
-
+    try:
+        print("Mencari lokasi destination:", request.destination)
         destination = geocode_location(request.destination)
-
         print("Destination:", destination)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Geocoding destination gagal: {str(e)}"
+        )
 
-        if not origin or not destination:
-            raise HTTPException(
-                status_code=400,
-                detail="Lokasi origin atau destination tidak ditemukan."
-            )
+    if not origin or not destination:
+        raise HTTPException(
+            status_code=400,
+            detail="Lokasi origin atau destination tidak ditemukan."
+        )
 
-
-        # ----------------------------------------------------
-        # 2. ROUTING
-        # ----------------------------------------------------
-
+    # ----------------------------------------------------
+    # 2. ROUTING
+    # ----------------------------------------------------
+    try:
         print("Mengambil data rute...")
-
         route = get_route(
             origin["latitude"],
             origin["longitude"],
             destination["latitude"],
             destination["longitude"]
         )
-
         print("Route:", route)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Routing rute gagal: {str(e)}"
+        )
 
+    if route.get("distance_km", 0) <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Jarak rute tidak valid (jarak <= 0 km)."
+        )
 
-        # ----------------------------------------------------
-        # 3. WEATHER
-        # ----------------------------------------------------
-
+    # ----------------------------------------------------
+    # 3. WEATHER
+    # ----------------------------------------------------
+    try:
         print("Mengambil data cuaca...")
-
         weather = get_weather(
             destination["latitude"],
             destination["longitude"]
         )
-
         print("Weather:", weather)
-
-
-        # ----------------------------------------------------
-        # 4. DATA UNTUK MODEL
-        # ----------------------------------------------------
-
-        input_data = pd.DataFrame([
-            {
-                "brand": request.brand,
-                "model": request.model,
-                "cc": request.cc,
-                "weight_kg": request.weight_kg,
-                "fuel_type": request.fuel_type,
-
-                "riding_style": request.riding_style,
-                "avg_speed_kmh": request.avg_speed_kmh,
-                "rider_weight": request.rider_weight,
-                "city_percentage": request.city_percentage,
-
-                # Sementara menggunakan ID dummy.
-                # Nanti dapat dihubungkan dengan dataset lokasi.
-                "route_id": 0,
-                "origin_id": 0,
-                "destination_id": 0,
-
-                "distance_km": route["distance_km"],
-                "duration_min": route["duration_min"],
-
-                # Jika routing service belum menyediakan elevasi,
-                # gunakan nilai default terlebih dahulu.
-                "elevation_gain_m": 0,
-                "min_elevation_m": 0,
-                "max_elevation_m": 0,
-
-                "temperature_c": weather["temperature_c"],
-                "humidity_percent": weather["humidity_percent"],
-                "rain_mm": weather["rain_mm"]
-            }
-        ])
-
-
-        # ----------------------------------------------------
-        # 5. PREDIKSI BBM
-        # ----------------------------------------------------
-
-        print("Melakukan prediksi konsumsi BBM...")
-
-        prediction = model.predict(input_data)
-
-        fuel_consumption = float(prediction[0])
-
-        fuel_consumption = round(
-            fuel_consumption,
-            2
-        )
-
-
-        # ----------------------------------------------------
-        # 6. HITUNG KEBUTUHAN BBM
-        # ----------------------------------------------------
-
-        distance_km = route["distance_km"]
-
-        if fuel_consumption <= 0:
-            raise ValueError(
-                "Hasil prediksi konsumsi BBM tidak valid."
-            )
-
-        fuel_needed = distance_km / fuel_consumption
-
-        fuel_needed = round(
-            fuel_needed,
-            2
-        )
-
-
-        # ----------------------------------------------------
-        # 7. HITUNG BIAYA
-        # ----------------------------------------------------
-
-        estimated_cost = fuel_needed * request.fuel_price_per_liter
-
-        estimated_cost = round(
-            estimated_cost
-        )
-
-
-        # ----------------------------------------------------
-        # 8. RESPONSE
-        # ----------------------------------------------------
-
-        return {
-
-            "origin": {
-                "name": request.origin,
-                "latitude": origin["latitude"],
-                "longitude": origin["longitude"]
-            },
-
-            "destination": {
-                "name": request.destination,
-                "latitude": destination["latitude"],
-                "longitude": destination["longitude"]
-            },
-
-            "route": {
-                "distance_km": distance_km,
-                "duration_min": route["duration_min"]
-            },
-
-            "weather": {
-                "temperature_c": weather["temperature_c"],
-                "humidity_percent": weather["humidity_percent"],
-                "rain_mm": weather["rain_mm"]
-            },
-
-            "prediction": {
-                "fuel_consumption_kml": fuel_consumption
-            },
-
-            "fuel": {
-                "fuel_needed_liter": fuel_needed,
-                "fuel_price_per_liter": request.fuel_price_per_liter
-            },
-
-            "cost": {
-                "estimated_cost": estimated_cost
-            }
-        }
-
-
-    except HTTPException:
-        raise
-
     except Exception as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Pengambilan data cuaca gagal: {str(e)}"
+        )
 
-        print("ERROR:", str(e))
+    # ----------------------------------------------------
+    # 4. DATA UNTUK MODEL (HANYA 14 FITUR VALID)
+    # ----------------------------------------------------
+    input_data = pd.DataFrame([
+        {
+            "brand": request.brand,
+            "model": request.model,
+            "cc": request.cc,
+            "weight_kg": request.weight_kg,
+            "fuel_type": request.fuel_type,
 
+            "riding_style": request.riding_style,
+            "avg_speed_kmh": request.avg_speed_kmh,
+            "rider_weight": request.rider_weight,
+            "city_percentage": request.city_percentage,
+
+            "distance_km": route["distance_km"],
+            "duration_min": route["duration_min"],
+
+            "temperature_c": weather["temperature_c"],
+            "humidity_percent": weather["humidity_percent"],
+            "rain_mm": weather["rain_mm"]
+        }
+    ])
+
+    # ----------------------------------------------------
+    # 5. PREDIKSI BBM
+    # ----------------------------------------------------
+    try:
+        print("Melakukan prediksi konsumsi BBM...")
+        prediction = model.predict(input_data)
+        fuel_consumption = float(prediction[0])
+    except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail=f"Prediksi model gagal: {str(e)}"
         )
+
+    if fuel_consumption <= 0:
+        raise HTTPException(
+            status_code=500,
+            detail="Hasil prediksi konsumsi BBM tidak valid (<= 0 km/L)."
+        )
+
+    fuel_consumption = round(fuel_consumption, 2)
+
+    # ----------------------------------------------------
+    # 6. HITUNG KEBUTUHAN BBM
+    # ----------------------------------------------------
+    distance_km = route["distance_km"]
+    fuel_needed = round(distance_km / fuel_consumption, 2)
+
+    # ----------------------------------------------------
+    # 7. HITUNG BIAYA
+    # ----------------------------------------------------
+    estimated_cost = round(fuel_needed * request.fuel_price_per_liter)
+
+    # ----------------------------------------------------
+    # 8. RESPONSE
+    # ----------------------------------------------------
+    return {
+        "origin": {
+            "name": request.origin,
+            "latitude": origin["latitude"],
+            "longitude": origin["longitude"]
+        },
+        "destination": {
+            "name": request.destination,
+            "latitude": destination["latitude"],
+            "longitude": destination["longitude"]
+        },
+        "route": {
+            "distance_km": distance_km,
+            "duration_min": route["duration_min"]
+        },
+        "weather": {
+            "temperature_c": weather["temperature_c"],
+            "humidity_percent": weather["humidity_percent"],
+            "rain_mm": weather["rain_mm"]
+        },
+        "prediction": {
+            "fuel_consumption_kml": fuel_consumption
+        },
+        "fuel": {
+            "fuel_needed_liter": fuel_needed,
+            "fuel_price_per_liter": request.fuel_price_per_liter
+        },
+        "cost": {
+            "estimated_cost": estimated_cost
+        }
+    }

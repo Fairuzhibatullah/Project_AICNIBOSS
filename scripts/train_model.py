@@ -1,6 +1,5 @@
 import pandas as pd
 import joblib
-
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
@@ -62,26 +61,7 @@ print("Dataset valid.")
 
 
 # ============================================================
-# FEATURES & TARGET
-# ============================================================
-
-X = df.drop(columns=[target])
-y = df[target]
-
-
-# ============================================================
-# DROP ID
-# ============================================================
-
-# training_id hanya identifier, bukan fitur prediksi.
-# route_id/origin_id/destination_id tetap dipertahankan
-# karena merepresentasikan kondisi rute.
-
-X = X.drop(columns=["training_id"])
-
-
-# ============================================================
-# DEFINISI FITUR
+# DEFINISI FITUR & TARGET
 # ============================================================
 
 categorical_features = [
@@ -97,42 +77,36 @@ numeric_features = [
     "avg_speed_kmh",
     "rider_weight",
     "city_percentage",
-    "route_id",
-    "origin_id",
-    "destination_id",
     "distance_km",
     "duration_min",
-    "elevation_gain_m",
-    "min_elevation_m",
-    "max_elevation_m",
     "temperature_c",
     "humidity_percent",
     "rain_mm"
 ]
 
-
-# ============================================================
-# VALIDASI FITUR
-# ============================================================
-
 required_features = categorical_features + numeric_features
 
 missing_features = [
     col for col in required_features
-    if col not in X.columns
+    if col not in df.columns
 ]
 
 if missing_features:
     raise ValueError(
-        f"Fitur tidak ditemukan: {missing_features}"
+        f"Fitur tidak ditemukan di dataset: {missing_features}"
     )
+
+X = df[required_features]
+y = df[target]
+
+print(f"Jumlah fitur yang digunakan: {len(required_features)}")
 
 
 # ============================================================
 # PREPROCESSING
 # ============================================================
 
-print("\n Menyiapkan preprocessing...")
+print("\nMenyiapkan preprocessing...")
 
 preprocessor = ColumnTransformer(
     transformers=[
@@ -182,7 +156,7 @@ pipeline = Pipeline(
 # TRAIN TEST SPLIT
 # ============================================================
 
-print("\n Membagi dataset train/test...")
+print("\nMembagi dataset train/test...")
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -199,21 +173,21 @@ print(f"Testing data  : {len(X_test)}")
 # TRAINING
 # ============================================================
 
-print("\n Melatih model Random Forest...")
+print("\nMelatih model Random Forest...")
 
 pipeline.fit(
     X_train,
     y_train
 )
 
-print(" Training selesai.")
+print("Training selesai.")
 
 
 # ============================================================
 # PREDICTION
 # ============================================================
 
-print("\n Melakukan prediksi pada data testing...")
+print("\nMelakukan prediksi pada data testing...")
 
 y_pred = pipeline.predict(X_test)
 
@@ -239,7 +213,7 @@ r2 = r2_score(
 
 
 print("\n" + "=" * 60)
-print(" HASIL EVALUASI MODEL")
+print("HASIL EVALUASI MODEL")
 print("=" * 60)
 
 print(f"MAE  : {mae:.4f} km/L")
@@ -263,5 +237,5 @@ joblib.dump(
     MODEL_FILE
 )
 
-print("\n Model berhasil disimpan!")
-print(f" Model : {MODEL_FILE}")
+print("\nModel berhasil disimpan!")
+print(f"Model : {MODEL_FILE}")

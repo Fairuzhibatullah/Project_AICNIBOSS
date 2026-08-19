@@ -27,7 +27,7 @@ print()
 
 
 # ============================================================
-# INPUT DATA
+# INPUT DATA (14 Fitur Model)
 # ============================================================
 
 print("Menyiapkan data prediksi...")
@@ -47,19 +47,13 @@ input_data = pd.DataFrame([{
     "city_percentage": 70,
 
     # Rute
-    "route_id": 1,
-    "origin_id": 80,
-    "destination_id": 99,
     "distance_km": 5.5,
-    "duration_min": 10,
-    "elevation_gain_m": 100,
-    "min_elevation_m": 200,
-    "max_elevation_m": 300,
+    "duration_min": 10.0,
 
     # Cuaca
     "temperature_c": 33.4,
     "humidity_percent": 35,
-    "rain_mm": 0
+    "rain_mm": 0.0
 }])
 
 
