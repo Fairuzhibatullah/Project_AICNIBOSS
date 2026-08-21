@@ -1,8 +1,77 @@
 import os
+
 import requests
+from dotenv import load_dotenv
 
 
-ORS_URL = "https://api.openrouteservice.org/v2/directions/driving-car"
+# CONFIG
+
+load_dotenv()
+
+ORS_API_KEY = os.getenv("ORS_API_KEY")
+
+ORS_PROFILE = "driving-car"
+
+ORS_URL = (
+    "https://api.openrouteservice.org/v2/"
+    f"directions/{ORS_PROFILE}"
+)
+
+ORS_SNAP_URL = (
+    "https://api.openrouteservice.org/v2/"
+    f"snap/{ORS_PROFILE}"
+)
+
+
+# HELPER: RESOLVE ROUTABLE POINT
+
+def resolve_routable_point(lat, lon, radius=10000):
+    """
+    Mencari titik terdekat di jaringan jalan yang routable menggunakan ORS Snap API.
+    Radius diset cukup besar agar selalu menemukan titik jalan terdekat.
+    """
+    if not ORS_API_KEY:
+        raise ValueError("ORS_API_KEY belum tersedia.")
+
+    if lat is None or lon is None:
+        raise ValueError("Latitude atau longitude tidak valid.")
+
+    # ORS menggunakan format: [longitude, latitude]
+    payload = {
+        "locations": [
+            [float(lon), float(lat)]
+        ],
+        "radius": radius
+    }
+
+    headers = {
+        "Authorization": ORS_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(
+            ORS_SNAP_URL,
+            json=payload,
+            headers=headers,
+            timeout=15
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        if "locations" in data and data["locations"]:
+            location = data["locations"][0].get("location")
+            if location and len(location) == 2:
+                # return (latitude, longitude)
+                return float(location[1]), float(location[0])
+                
+        raise ValueError("Response ORS Snap tidak memiliki lokasi yang valid.")
+    except Exception as e:
+        error_msg = str(e)
+        if hasattr(e, 'response') and e.response is not None:
+            # e.response.text biasanya hanya JSON dari ORS
+            error_msg = f"HTTP {e.response.status_code} - {e.response.text}"
+        raise ValueError(f"Tidak menemukan titik routable untuk ({lat}, {lon}). Error ORS: {error_msg}")
 
 
 def get_route(
@@ -11,47 +80,66 @@ def get_route(
     destination_lat,
     destination_lon
 ):
-    api_key = os.getenv("ORS_API_KEY")
 
-    if not api_key:
-        raise ValueError("ORS_API_KEY belum tersedia.")
+    if not ORS_API_KEY:
+        raise ValueError(
+            "ORS_API_KEY belum tersedia."
+        )
 
-    headers = {
-        "Authorization": api_key,
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+    # Resolve origin dan destination
+    resolved_origin_lat, resolved_origin_lon = resolve_routable_point(origin_lat, origin_lon)
+    resolved_dest_lat, resolved_dest_lon = resolve_routable_point(destination_lat, destination_lon)
+
+    # Koordinat routing: [longitude, latitude]
+    coordinates = [
+        [
+            float(resolved_origin_lon),
+            float(resolved_origin_lat)
+        ],
+        [
+            float(resolved_dest_lon),
+            float(resolved_dest_lat)
+        ]
+    ]
+
+    payload = {
+        "coordinates": coordinates,
+        "instructions": False,
+        "elevation": True
     }
 
-    body = {
-        "coordinates": [
-            [origin_lon, origin_lat],
-            [destination_lon, destination_lat]
-        ]
+    headers = {
+        "Authorization": ORS_API_KEY,
+        "Content-Type": "application/json"
     }
 
     response = requests.post(
         ORS_URL,
+        json=payload,
         headers=headers,
-        json=body,
         timeout=30
     )
 
-    print("ORS status:", response.status_code)
-
     if response.status_code != 200:
-        print("ORS response:", response.text)
-
-    response.raise_for_status()
+        error_msg = response.text
+        raise ValueError(f"Gagal mengambil rute dari ORS. HTTP {response.status_code}: {error_msg}")
 
     data = response.json()
 
     if "routes" not in data or not data["routes"]:
-        raise ValueError("ORS tidak mengembalikan data rute.")
+        raise ValueError(
+            "Response ORS tidak memiliki 'routes' atau kosong."
+        )
 
     route = data["routes"][0]
+    
+    if "summary" not in route:
+        raise ValueError("Response ORS tidak memiliki 'summary'.")
 
-    distance_km = route["summary"]["distance"] / 1000
-    duration_min = route["summary"]["duration"] / 60
+    summary = route["summary"]
+
+    distance_km = summary.get("distance", 0) / 1000
+    duration_min = summary.get("duration", 0) / 60
 
     return {
         "distance_km": round(distance_km, 3),

@@ -10,18 +10,12 @@ from backend.services.routing import get_route
 from backend.services.weather import get_weather
 
 
-# ============================================================
 # CONFIG
-# ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MODEL_FILE = BASE_DIR / "models" / "fuel_consumption_model.pkl"
 
-
-# ============================================================
-# APP
-# ============================================================
 
 app = FastAPI(
     title="AIC NIBOSS API",
@@ -29,12 +23,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-# ============================================================
 # LOAD MODEL
-# ============================================================
-
-print("Memuat model...")
 
 if not MODEL_FILE.exists():
     raise FileNotFoundError(
@@ -43,12 +32,8 @@ if not MODEL_FILE.exists():
 
 model = joblib.load(MODEL_FILE)
 
-print("Model berhasil dimuat.")
 
-
-# ============================================================
 # REQUEST SCHEMA
-# ============================================================
 
 class PredictionRequest(BaseModel):
 
@@ -73,9 +58,7 @@ class PredictionRequest(BaseModel):
     fuel_price_per_liter: float = Field(gt=0, description="Harga BBM per liter")
 
 
-# ============================================================
 # ROOT
-# ============================================================
 
 @app.get("/")
 def root():
@@ -84,10 +67,7 @@ def root():
         "status": "running"
     }
 
-
-# ============================================================
 # PREDICTION
-# ============================================================
 
 @app.post("/predict")
 def predict(request: PredictionRequest):
@@ -99,13 +79,9 @@ def predict(request: PredictionRequest):
             detail="Lokasi origin dan destination tidak boleh kosong."
         )
 
-    # ----------------------------------------------------
     # 1. GEOCODING
-    # ----------------------------------------------------
     try:
-        print("Mencari lokasi origin:", request.origin)
         origin = geocode_location(request.origin)
-        print("Origin:", origin)
     except Exception as e:
         raise HTTPException(
             status_code=400,
@@ -113,9 +89,7 @@ def predict(request: PredictionRequest):
         )
 
     try:
-        print("Mencari lokasi destination:", request.destination)
         destination = geocode_location(request.destination)
-        print("Destination:", destination)
     except Exception as e:
         raise HTTPException(
             status_code=400,
@@ -128,18 +102,14 @@ def predict(request: PredictionRequest):
             detail="Lokasi origin atau destination tidak ditemukan."
         )
 
-    # ----------------------------------------------------
     # 2. ROUTING
-    # ----------------------------------------------------
     try:
-        print("Mengambil data rute...")
         route = get_route(
             origin["latitude"],
             origin["longitude"],
             destination["latitude"],
             destination["longitude"]
         )
-        print("Route:", route)
     except Exception as e:
         raise HTTPException(
             status_code=400,
@@ -152,25 +122,19 @@ def predict(request: PredictionRequest):
             detail="Jarak rute tidak valid (jarak <= 0 km)."
         )
 
-    # ----------------------------------------------------
     # 3. WEATHER
-    # ----------------------------------------------------
     try:
-        print("Mengambil data cuaca...")
         weather = get_weather(
             destination["latitude"],
             destination["longitude"]
         )
-        print("Weather:", weather)
     except Exception as e:
         raise HTTPException(
             status_code=502,
             detail=f"Pengambilan data cuaca gagal: {str(e)}"
         )
 
-    # ----------------------------------------------------
     # 4. DATA UNTUK MODEL (HANYA 14 FITUR VALID)
-    # ----------------------------------------------------
     input_data = pd.DataFrame([
         {
             "brand": request.brand,
@@ -193,11 +157,8 @@ def predict(request: PredictionRequest):
         }
     ])
 
-    # ----------------------------------------------------
     # 5. PREDIKSI BBM
-    # ----------------------------------------------------
     try:
-        print("Melakukan prediksi konsumsi BBM...")
         prediction = model.predict(input_data)
         fuel_consumption = float(prediction[0])
     except Exception as e:
@@ -214,20 +175,14 @@ def predict(request: PredictionRequest):
 
     fuel_consumption = round(fuel_consumption, 2)
 
-    # ----------------------------------------------------
     # 6. HITUNG KEBUTUHAN BBM
-    # ----------------------------------------------------
     distance_km = route["distance_km"]
     fuel_needed = round(distance_km / fuel_consumption, 2)
 
-    # ----------------------------------------------------
     # 7. HITUNG BIAYA
-    # ----------------------------------------------------
     estimated_cost = round(fuel_needed * request.fuel_price_per_liter)
 
-    # ----------------------------------------------------
     # 8. RESPONSE
-    # ----------------------------------------------------
     return {
         "origin": {
             "name": request.origin,
