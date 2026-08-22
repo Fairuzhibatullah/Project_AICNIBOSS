@@ -196,7 +196,8 @@ def predict(request: PredictionRequest):
         },
         "route": {
             "distance_km": distance_km,
-            "duration_min": route["duration_min"]
+            "duration_min": route["duration_min"],
+            "geometry": route.get("geometry", [])
         },
         "weather": {
             "temperature_c": weather["temperature_c"],

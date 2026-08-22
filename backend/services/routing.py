@@ -23,6 +23,67 @@ ORS_SNAP_URL = (
 )
 
 
+# HELPER: DECODE POLYLINE
+
+def decode_polyline(polyline_str, is3d=True):
+    """
+    Decodes an encoded polyline string (Google Polyline Algorithm) into a list of coordinates.
+    Returns: [[longitude, latitude], [longitude, latitude], ...]
+    """
+    index = 0
+    length = len(polyline_str)
+    coords = []
+    lat = 0
+    lon = 0
+    
+    while index < length:
+        # Decode Latitude
+        shift = 0
+        result = 0
+        while True:
+            if index >= length:
+                break
+            b = ord(polyline_str[index]) - 63
+            index += 1
+            result |= (b & 0x1f) << shift
+            shift += 5
+            if b < 0x20:
+                break
+        lat += ~(result >> 1) if (result & 1) else (result >> 1)
+        
+        # Decode Longitude
+        shift = 0
+        result = 0
+        while True:
+            if index >= length:
+                break
+            b = ord(polyline_str[index]) - 63
+            index += 1
+            result |= (b & 0x1f) << shift
+            shift += 5
+            if b < 0x20:
+                break
+        lon += ~(result >> 1) if (result & 1) else (result >> 1)
+        
+        if is3d:
+            # Decode Elevation
+            shift = 0
+            result = 0
+            while True:
+                if index >= length:
+                    break
+                b = ord(polyline_str[index]) - 63
+                index += 1
+                result |= (b & 0x1f) << shift
+                shift += 5
+                if b < 0x20:
+                    break
+                    
+        coords.append([round(lon * 1e-5, 5), round(lat * 1e-5, 5)])
+        
+    return coords
+
+
 # HELPER: RESOLVE ROUTABLE POINT
 
 def resolve_routable_point(lat, lon, radius=10000):
@@ -105,7 +166,8 @@ def get_route(
     payload = {
         "coordinates": coordinates,
         "instructions": False,
-        "elevation": True
+        "elevation": True,
+        "geometry": True
     }
 
     headers = {
@@ -135,13 +197,21 @@ def get_route(
     
     if "summary" not in route:
         raise ValueError("Response ORS tidak memiliki 'summary'.")
+        
+    if "geometry" not in route:
+        raise ValueError("Response ORS tidak memiliki 'geometry'.")
 
     summary = route["summary"]
+    encoded_geom = route["geometry"]
+    
+    # Decode polyline
+    decoded_geom = decode_polyline(encoded_geom, is3d=True)
 
     distance_km = summary.get("distance", 0) / 1000
     duration_min = summary.get("duration", 0) / 60
 
     return {
         "distance_km": round(distance_km, 3),
-        "duration_min": round(duration_min, 2)
-    }
+        "duration_min": round(duration_min, 2),
+        "geometry": decoded_geom
+    }

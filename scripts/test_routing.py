@@ -27,6 +27,14 @@ def test_routing():
         print("\nHasil routing sukses:")
         print(f"Jarak    : {route['distance_km']} km")
         print(f"Durasi   : {route['duration_min']} menit")
+        if 'geometry' in route and isinstance(route['geometry'], list):
+            print(f"Geometry : Tersedia ({len(route['geometry'])} titik)")
+            if len(route['geometry']) > 2:
+                print(f"Sample titik: {route['geometry'][:2]} ...")
+            else:
+                print("Peringatan: Geometry hanya memiliki 2 titik atau kurang (mungkin garis lurus).")
+        else:
+            print("Geometry : Tidak valid atau tidak tersedia")
     except Exception as e:
         print(f"\nRouting gagal: {e}")
 
