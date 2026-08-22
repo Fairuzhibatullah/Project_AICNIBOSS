@@ -7,27 +7,34 @@ function LocationForm({ formData, setFormData }) {
   };
 
   return (
-    <div className="card">
-      <h2>1. Lokasi Perjalanan</h2>
-      <div className="form-group">
-        <label>Lokasi Asal</label>
-        <input
-          type="text"
-          name="origin"
-          value={formData.origin}
-          onChange={handleChange}
-          placeholder="Contoh: Stasiun Bogor"
-        />
+    <div className="form-card">
+      <div className="card-header">
+        <span className="material-symbols-outlined">pin_drop</span>
+        <h3>Lokasi Perjalanan</h3>
       </div>
-      <div className="form-group">
-        <label>Lokasi Tujuan</label>
-        <input
-          type="text"
-          name="destination"
-          value={formData.destination}
-          onChange={handleChange}
-          placeholder="Contoh: Kebun Raya Bogor"
-        />
+      <div className="card-body">
+        <div className="form-group">
+          <label>Lokasi Asal</label>
+          <input
+            type="text"
+            name="origin"
+            value={formData.origin}
+            onChange={handleChange}
+            placeholder="Contoh: Stasiun Bogor"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Lokasi Tujuan</label>
+          <input
+            type="text"
+            name="destination"
+            value={formData.destination}
+            onChange={handleChange}
+            placeholder="Contoh: Kebun Raya Bogor"
+            required
+          />
+        </div>
       </div>
     </div>
   );
