@@ -18,7 +18,7 @@ function Sidebar() {
         </a>
         <a href="#" className="nav-item active">
           <span className="material-symbols-outlined">directions_car</span>
-          <span>Perjalanan</span>
+          <span>Hasil</span>
         </a>
         <a href="#" className="nav-item">
           <span className="material-symbols-outlined">analytics</span>
