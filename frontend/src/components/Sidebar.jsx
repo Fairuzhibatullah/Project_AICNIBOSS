@@ -1,33 +1,41 @@
 import React from 'react';
 
-function Sidebar() {
+function Sidebar({ showHome, onHome, onResult }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <span className="material-symbols-outlined logo-icon">route</span>
+        <span className="material-symbols-outlined logo-icon">
+          route
+        </span>
+
         <div className="logo-text">
           <h1>BogoRoute</h1>
           <p>AI Route Predictor</p>
         </div>
       </div>
-      
+
       <nav className="sidebar-nav">
-        <a href="#" className="nav-item">
-          <span className="material-symbols-outlined">home</span>
-          <span>Beranda</span>
-        </a>
-        <a href="#" className="nav-item active">
-          <span className="material-symbols-outlined">directions_car</span>
-          <span>Hasil</span>
-        </a>
-        <a href="#" className="nav-item">
-          <span className="material-symbols-outlined">analytics</span>
-          <span>Hasil Prediksi</span>
-        </a>
-        <a href="#" className="nav-item">
-          <span className="material-symbols-outlined">info</span>
-          <span>Tentang</span>
-        </a>
+        <button
+          type="button"
+          className={`nav-item ${showHome ? 'active' : ''}`}
+          onClick={onHome}
+        >
+          <span className="material-symbols-outlined">
+            home
+          </span>
+          <span>Home</span>
+        </button>
+
+        <button
+          type="button"
+          className={`nav-item ${!showHome ? 'active' : ''}`}
+          onClick={onResult}
+        >
+          <span className="material-symbols-outlined">
+            analytics
+          </span>
+          <span>Prediksi</span>
+        </button>
       </nav>
     </aside>
   );

@@ -1,24 +1,29 @@
 import React from 'react';
 
-function MobileNav() {
+function MobileNav({ showHome, onHome, onResult }) {
   return (
     <nav className="mobile-nav">
-      <a href="#" className="nav-item">
-        <span className="material-symbols-outlined">home</span>
-        <span>Beranda</span>
-      </a>
-      <a href="#" className="nav-item active">
-        <span className="material-symbols-outlined">directions_car</span>
-        <span>Perjalanan</span>
-      </a>
-      <a href="#" className="nav-item">
-        <span className="material-symbols-outlined">analytics</span>
+      <button
+        type="button"
+        className={`nav-item ${showHome ? 'active' : ''}`}
+        onClick={onHome}
+      >
+        <span className="material-symbols-outlined">
+          home
+        </span>
+        <span>Home</span>
+      </button>
+
+      <button
+        type="button"
+        className={`nav-item ${!showHome ? 'active' : ''}`}
+        onClick={onResult}
+      >
+        <span className="material-symbols-outlined">
+          analytics
+        </span>
         <span>Hasil</span>
-      </a>
-      <a href="#" className="nav-item">
-        <span className="material-symbols-outlined">info</span>
-        <span>Tentang</span>
-      </a>
+      </button>
     </nav>
   );
 }

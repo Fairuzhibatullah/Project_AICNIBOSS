@@ -9,6 +9,7 @@ import FuelPriceForm from './components/FuelPriceForm';
 import PredictionResult from './components/PredictionResult';
 import { predictRoute } from './services/api';
 import './App.css';
+import Home from './components/Home';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [showHome, setShowHome] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,54 +49,92 @@ function App() {
   };
 
   return (
-    <div className="app-layout">
-      <Sidebar />
-      
-      <main className="main-area">
-        <TopBar />
-        
-        <div className="content-grid">
-          {/* Left Column: Form */}
-          <div className="form-column">
-            {errorMsg && (
-              <div className="alert-error">
-                <span className="material-symbols-outlined">error</span>
-                <span>{errorMsg}</span>
-              </div>
-            )}
-            
-            <form onSubmit={handleSubmit} className="trip-form">
-              <LocationForm formData={formData} setFormData={setFormData} />
-              <VehicleForm formData={formData} setFormData={setFormData} />
-              <TravelConditionForm formData={formData} setFormData={setFormData} />
-              <FuelPriceForm formData={formData} setFormData={setFormData} />
-              
-              <button type="submit" className="btn-primary" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <span className="spinner"></span>
-                    Menghitung Rute...
-                  </>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined">route</span>
-                    Buat Rute
-                  </>
-                )}
-              </button>
-            </form>
+  <div className="app-layout">
+    <Sidebar
+  showHome={showHome}
+  onHome={() => setShowHome(true)}
+  onResult={() => setShowHome(false)}
+/>
+
+    <main className="main-area">
+      {showHome ? (
+        <Home onStart={() => setShowHome(false)} />
+      ) : (
+        <>
+          <TopBar />
+
+          <div className="content-grid">
+            {/* Left Column: Form */}
+            <div className="form-column">
+              {errorMsg && (
+                <div className="alert-error">
+                  <span className="material-symbols-outlined">
+                    error
+                  </span>
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="trip-form">
+                <LocationForm
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+
+                <VehicleForm
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+
+                <TravelConditionForm
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+
+                <FuelPriceForm
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="spinner"></span>
+                      Menghitung Rute...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined">
+                        route
+                      </span>
+                      Buat Rute
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Right Column: Map & Result */}
+            <div className="result-column">
+              <PredictionResult result={result} />
+            </div>
           </div>
-          
-          {/* Right Column: Map & Result */}
-          <div className="result-column">
-            <PredictionResult result={result} />
-          </div>
-        </div>
-      </main>
-      
-      <MobileNav />
-    </div>
-  );
+        </>
+      )}
+    </main>
+
+    <MobileNav
+  showHome={showHome}
+  onHome={() => setShowHome(true)}
+  onResult={() => setShowHome(false)}
+/>
+  </div>
+);
+
 }
 
 export default App;
