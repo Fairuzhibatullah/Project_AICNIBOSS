@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: bogoroute_backend
+    ports:
+      - "8001:8000"
+    environment:
+      # If there's an ORS_API_KEY in .env, docker compose will pass it automatically
+      # if we use env_file: .env
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bogoroute_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

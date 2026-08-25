@@ -79,10 +79,16 @@ def root():
         "status": "running"
     }
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # PREDICTION
 
 @app.post("/predict")
 def predict(request: PredictionRequest):
+    logger.info("BOGOROUTE - prediction request received")
 
     # Validasi input lokasi
     if not request.origin.strip() or not request.destination.strip():
@@ -92,6 +98,7 @@ def predict(request: PredictionRequest):
         )
 
     # 1. GEOCODING
+    logger.info("Processing geocoding")
     try:
         origin = geocode_location(request.origin)
     except Exception as e:
@@ -115,6 +122,7 @@ def predict(request: PredictionRequest):
         )
 
     # 2. ROUTING
+    logger.info("Processing route")
     try:
         route = get_route(
             origin["latitude"],
@@ -135,6 +143,7 @@ def predict(request: PredictionRequest):
         )
 
     # 3. WEATHER
+    logger.info("Fetching weather data")
     try:
         weather = get_weather(
             destination["latitude"],
@@ -170,6 +179,7 @@ def predict(request: PredictionRequest):
     ])
 
     # 5. PREDIKSI BBM
+    logger.info("Running Random Forest inference")
     try:
         prediction = model.predict(input_data)
         fuel_consumption = float(prediction[0])
@@ -186,6 +196,7 @@ def predict(request: PredictionRequest):
         )
 
     fuel_consumption = round(fuel_consumption, 2)
+    logger.info("Prediction completed")
 
     # 6. HITUNG KEBUTUHAN BBM
     distance_km = route["distance_km"]
@@ -193,6 +204,9 @@ def predict(request: PredictionRequest):
 
     # 7. HITUNG BIAYA
     estimated_cost = round(fuel_needed * request.fuel_price_per_liter)
+
+    logger.info("Returning prediction result")
+    logger.info(f"POST /predict - 200 OK, distance: {distance_km} km, duration: {route['duration_min']} min, predicted fuel efficiency: {fuel_consumption} km/L, estimated fuel needed: {fuel_needed} L, estimated cost: {estimated_cost}")
 
     # 8. RESPONSE
     return {
